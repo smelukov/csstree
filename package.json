@@ -29,6 +29,7 @@
     "url": "https://github.com/csstree/csstree/issues"
   },
   "main": "./lib/index",
+  "types": "./types/index.d.ts",
   "browser": {
     "./data": "./dist/default-syntax.json"
   },
