@@ -1,3 +1,5 @@
+import {SourceMapGenerator} from './sourcemap';
+
 declare module 'css-tree' {
     export interface ListItem<T> {
         prev: ListItem<T> | null,
@@ -5,12 +7,18 @@ declare module 'css-tree' {
         data: T
     }
 
+    export interface ListCursor<T> {
+        prev: ListItem<T> | null,
+        next: ListItem<T> | null,
+        cursor: ListCursor<T> | null
+    }
+
     export interface List<T> {
         createItem(): ListItem<T>;
 
         head: ListItem<T> | null,
         tail: ListItem<T> | null,
-        cursor: ListItem<T> | null,
+        cursor: ListCursor<T> | null,
 
         updateCursors(prevOld: ListItem<T> | null, prevNew: ListItem<T> | null, nextOld: ListItem<T> | null, nextNew: ListItem<T> | null): void;
 
@@ -114,7 +122,7 @@ declare module 'css-tree' {
             column: number
         };
 
-        sourceFragment(extraLines: number): string[]
+        sourceFragment(extraLines: number): string
     }
 
     export interface ParserOptions {
@@ -164,14 +172,14 @@ declare module 'css-tree' {
     export interface WalkerOptions {
         enter?: WalkerCallback;
         leave?: WalkerCallback;
-        visit?: WalkerCallback;
-        reverse?: WalkerCallback;
+        visit?: string;
+        reverse?: boolean;
     }
 
     export function parse(source: string, options?: ParserOptions): Node;
 
-    export function walk(ast: Node, options: WalkerCallback | WalkerOptions): void;
+    export function walk(ast: Node, enterCallback: WalkerCallback): void;
+    export function walk(ast: Node, options: WalkerOptions): void;
 
-    // todo: map to SourceMapGenerator
-    export function generate(ast: Node, options?: GeneratorOptions): string | { css: string, map: any };
+    export function generate(ast: Node, options?: GeneratorOptions): string | { css: string, map: SourceMapGenerator };
 }
